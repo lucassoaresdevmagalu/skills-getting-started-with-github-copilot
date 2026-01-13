@@ -41,7 +41,31 @@ document.addEventListener("DOMContentLoaded", () => {
         if (details.participants && details.participants.length > 0) {
           details.participants.forEach((participant) => {
             const li = document.createElement("li");
-            li.textContent = participant; // ou personalize como quiser
+            // Cria um span para o email/nome
+            const span = document.createElement("span");
+            span.textContent = participant;
+            li.appendChild(span);
+
+            // Cria o ícone de deletar
+            const deleteBtn = document.createElement("button");
+            deleteBtn.className = "delete-participant-btn";
+            deleteBtn.title = "Remover participante";
+            deleteBtn.innerHTML = "&#128465;"; // ícone de lixeira unicode
+            deleteBtn.style.marginLeft = "8px";
+            deleteBtn.style.background = "none";
+            deleteBtn.style.border = "none";
+            deleteBtn.style.cursor = "pointer";
+            deleteBtn.style.color = "#d32f2f";
+            deleteBtn.style.fontSize = "1.1em";
+
+            // Adiciona evento de clique para remover participante
+            deleteBtn.addEventListener("click", async () => {
+              if (confirm(`Remover ${participant} desta atividade?`)) {
+                await unregisterParticipant(name, participant);
+              }
+            });
+
+            li.appendChild(deleteBtn);
             participantsList.appendChild(li);
           });
         } else {
@@ -89,6 +113,8 @@ document.addEventListener("DOMContentLoaded", () => {
         messageDiv.textContent = result.message;
         messageDiv.className = "success";
         signupForm.reset();
+        // Atualiza a lista de atividades para refletir o novo participante
+        fetchActivities();
       } else {
         messageDiv.textContent = result.detail || "An error occurred";
         messageDiv.className = "error";
@@ -110,4 +136,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Initialize app
   fetchActivities();
+  // Função para remover participante
+  async function unregisterParticipant(activity, email) {
+    try {
+      const response = await fetch(`/activities/${encodeURIComponent(activity)}/unregister?email=${encodeURIComponent(email)}`, {
+        method: "POST"
+      });
+      const result = await response.json();
+      if (response.ok) {
+        messageDiv.textContent = result.message || "Participante removido.";
+        messageDiv.className = "success";
+        fetchActivities();
+      } else {
+        messageDiv.textContent = result.detail || "Erro ao remover participante.";
+        messageDiv.className = "error";
+      }
+      messageDiv.classList.remove("hidden");
+      setTimeout(() => {
+        messageDiv.classList.add("hidden");
+      }, 5000);
+    } catch (error) {
+      messageDiv.textContent = "Erro ao remover participante.";
+      messageDiv.className = "error";
+      messageDiv.classList.remove("hidden");
+      console.error("Erro ao remover participante:", error);
+    }
+  }
 });
