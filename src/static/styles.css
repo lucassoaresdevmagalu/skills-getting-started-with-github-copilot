@@ -1,3 +1,16 @@
+.delete-participant-btn {
+  margin-left: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #d32f2f;
+  font-size: 1.1em;
+  vertical-align: middle;
+  transition: color 0.2s;
+}
+.delete-participant-btn:hover {
+  color: #b71c1c;
+}
 * {
   box-sizing: border-box;
   margin: 0;
@@ -72,6 +85,32 @@ section h3 {
 
 .activity-card p {
   margin-bottom: 8px;
+}
+
+.participants-section {
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px solid #e0e0e0;
+  background-color: #eef2fa;
+  border-radius: 4px;
+}
+
+.participants-section h5 {
+  margin-bottom: 8px;
+  color: #3949ab;
+  font-size: 1rem;
+}
+
+.participants-list {
+  list-style-type: none;
+  margin-left: 20px;
+  color: #333;
+  font-size: 0.97rem;
+}
+
+.participants-list li {
+  margin-bottom: 4px;
+  padding-left: 2px;
 }
 
 .form-group {
